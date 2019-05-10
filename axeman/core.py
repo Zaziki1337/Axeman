@@ -100,7 +100,7 @@ async def retrieve_certificates(loop, url=None, ctl_offset=0, output_directory='
                 continue
 
             download_tasks = asyncio.gather(*[
-                download_worker(session, log_info, work_deque, download_results_queue)
+                download_worker(session, log_info, work_deque, download_results_queue, output_dir=output_directory)
                 for _ in range(concurrency_count)
             ])
 
