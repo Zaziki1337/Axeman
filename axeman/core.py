@@ -28,7 +28,7 @@ from . import certlib
 DOWNLOAD_CONCURRENCY = 50
 MAX_QUEUE_SIZE = 1000
 
-async def download_worker(session, log_info, work_deque, download_queue):
+async def download_worker(session, log_info, work_deque, download_queue, output_dir):
     while True:
         try:
             start, end = work_deque.popleft()
@@ -46,7 +46,7 @@ async def download_worker(session, log_info, work_deque, download_queue):
             except Exception as e:
                 logging.error("Exception getting block {}-{}! {}".format(start, end, e))
         else:  # Notorious for else, if we didn't encounter a break our request failed 3 times D:
-            with open('/tmp/fails.csv', 'a') as f:
+            with open('{}/axeman_fails.csv'.format(output_dir), 'a') as f:
                 f.write(",".join([log_info['url'], str(start), str(end)]))
             return
 
@@ -126,7 +126,7 @@ async def retrieve_certificates(loop, url=None, ctl_offset=0, output_directory='
 
 async def processing_coro(download_results_queue, output_dir="/tmp"):
     logging.info("Starting processing coro and process pool")
-    process_pool = aioprocessing.AioPool(initargs=(output_dir,))
+    process_pool = aioprocessing.AioPool()
 
     done = False
 
@@ -151,7 +151,7 @@ async def processing_coro(download_results_queue, output_dir="/tmp"):
                 os.makedirs(csv_storage)
 
         if len(entries_iter) > 0:
-            await process_pool.coro_map(process_worker, entries_iter)
+            await process_pool.coro_map(functools.partial(process_worker, output_dir=output_dir), entries_iter)
 
         logging.debug("Done mapping! Got results")
 
