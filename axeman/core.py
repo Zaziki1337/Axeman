@@ -36,11 +36,11 @@ async def download_worker(session, log_info, work_deque, download_queue, output_
         except IndexError:
             return
 
-        logging.debug("[{}] Queueing up blocks {}-{}...".format(log_info['url'], start, end))
-
-        if os.path.isfile('{}/{}-{}.csv'):
-            logging.error("Skipping {}/{}-{}.csv (already exists)")
+        if os.path.isfile('{}/certificates/{}/{}-{}.csv'.format(output_dir, log_info["url"].replace('/', '_'), start, end)):
+            logging.error('Skipping {} {} - {} ..-'.format(log_info["url"].replace('/', '_'), start, end))
             return
+
+        logging.debug("[{}] Queueing up blocks {}-{}...".format(log_info['url'], start, end))
 
         for x in range(3):
             try:
