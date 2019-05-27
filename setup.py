@@ -22,7 +22,7 @@ List and outputs them to CSV.
 setup(
     name='axeman',
     version=axeman.__version__,
-    url='https://github.com/CaliDog/Axeman/',
+    url='https://github.com/Zaziki1337/Axeman/',
     author='Ryan Sears',
     install_requires=dependencies,
     author_email='ryan@calidog.io',

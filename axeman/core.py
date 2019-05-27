@@ -1,3 +1,4 @@
+import functools
 import argparse
 import asyncio
 from collections import deque
@@ -36,6 +37,10 @@ async def download_worker(session, log_info, work_deque, download_queue, output_
             return
 
         logging.debug("[{}] Queueing up blocks {}-{}...".format(log_info['url'], start, end))
+
+        if os.path.isfile('{}/{}-{}.csv'):
+            logging.error("Skipping {}/{}-{}.csv (already exists)")
+            return
 
         for x in range(3):
             try:
